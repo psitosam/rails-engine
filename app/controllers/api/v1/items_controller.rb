@@ -8,7 +8,7 @@ class Api::V1::ItemsController < ApplicationController
     if Item.exists?(params[:id])
       render json: ItemSerializer.new(Item.find(params[:id]))
     else
-      render json: { data: {details: 'No item matches this id'} },
+      render json: { data: { message: 'No item matches this id'} },
              status: 404
     end
   end
