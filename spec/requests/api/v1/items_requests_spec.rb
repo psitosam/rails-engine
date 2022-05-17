@@ -42,5 +42,20 @@ RSpec.describe 'The Items API' do
       expect(item[:attributes][:unit_price]).to be_a Float
       expect(item[:attributes][:merchant_id]).to be_a Integer
     end
+
+    describe 'sad path' do
+      it 'returns error message if no item found' do
+        merchant = create :merchant
+        item = create :item, { merchant_id: merchant.id }
+
+        get "/api/v1/items/#{item.id + 1}"
+
+        parsed = JSON.parse(response.body, symbolize_names: true)
+        item = parsed[:data]
+# require 'pry'; binding.pry
+        expect(item[:message]).to eq("No item matches this id")
+        expect(response.status).to eq(404)
+      end
+    end
   end
 end
