@@ -21,4 +21,26 @@ RSpec.describe 'The Items API' do
       expect(item[:attributes][:merchant_id]).to be_a Integer
     end
   end
+
+  context 'show' do
+    it 'gets one specific item' do
+      merchant = create :merchant
+      item = create :item, { merchant_id: merchant.id }
+
+      get "/api/v1/items/#{item.id}"
+
+      expect(response.status).to eq(200)
+      expect(response).to be_successful
+
+      parsed = JSON.parse(response.body, symbolize_names: true)
+      item = parsed[:data]
+
+      expect(item).to have_key(:id)
+      expect(item[:id]).to be_a String
+      expect(item[:attributes][:name]).to be_a String
+      expect(item[:attributes][:description]).to be_a String
+      expect(item[:attributes][:unit_price]).to be_a Float
+      expect(item[:attributes][:merchant_id]).to be_a Integer
+    end
+  end
 end
