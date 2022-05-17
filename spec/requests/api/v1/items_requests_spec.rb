@@ -58,4 +58,75 @@ RSpec.describe 'The Items API' do
       end
     end
   end
+
+  it 'can create an item' do
+    merchant = create :merchant
+    item_params = {
+      name: 'left-handed back scratcher',
+      description: 'scratch that back, lefty',
+      unit_price: 12.5,
+      merchant_id: merchant.id
+    }
+
+    post '/api/v1/items', params: item_params
+
+    expect(response).to be_successful
+    expect(response.status).to eq(201)
+
+    item = Item.last
+
+    expect(item.name).to eq('left-handed back scratcher')
+    expect(item.description).to eq('scratch that back, lefty')
+    expect(item.unit_price).to eq(12.5)
+    expect(item.merchant_id).to eq(merchant.id)
+  end
+
+  describe 'sad path' do
+    it 'returns 404 if item attributes not defined correctly' do
+      merchant = create :merchant
+      item_params = {
+        name: 'left-handed back scratcher',
+        description: 'scratch that back, lefty',
+        unit_price: 12.5,
+        merchant_id: 00000
+      }
+
+      post '/api/v1/items', params: item_params
+
+      expect(response.status).to eq(404)
+    end
+  end
+
+  it 'can delete an item' do
+    merchant = create :merchant
+    item = create(:item, merchant_id: merchant.id)
+
+    delete "/api/v1/items/#{item.id}"
+
+    expect(response).to be_successful
+    expect(response.status).to be(204)
+    expect(merchant.items.count).to eq(0)
+  end
+
+  it 'can update an item' do
+    item = create(:item, name: "Fake name")
+
+    put "/api/v1/items/#{item.id}", params: {name: "Real name"}
+
+    expect(response).to be_successful
+    expect(Item.last.name).to eq("Real name")
+  end
+
+  it 'can get the merchant data for a given item' do
+    merchant1 = create :merchant
+    merchant2 = create :merchant
+    item = create(:item, merchant_id: merchant1.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+    merchant = parsed[:data] #turning the JSON into a hash so we can test more easily
+    expect(response).to be_successful
+    expect(merchant[:attributes][:id]).to eq(merchant1.id)
+  end
 end
