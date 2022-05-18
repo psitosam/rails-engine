@@ -71,6 +71,28 @@ RSpec.describe 'The Merchants API' do
       expect(response).to be_successful
       expect(response_data).to eq("No merchant found")
     end
+
+    it 'can find all merchants that match a search term' do
+      merchant_1 = Merchant.create!(name: "Billy Bob's Bug Boutique")
+      merchant_2 = Merchant.create!(name: "Bob's Burgers")
+      merchant_3 = Merchant.create!(name: "Jimbob's Jangles")
+      merchant_4 = Merchant.create!(name: "Jim's Jams")
+
+      name = 'Bob'
+
+      get "/api/v1/merchants/find_all_merchants?name=#{name}"
+
+      parsed = JSON.parse(response.body, symbolize_names: true)
+      merchants = parsed[:data]
+
+      expect(response.status).to eq(200)
+      expect(response).to be_successful
+      expect(merchants.class).to eq(Array)
+      expect(merchants.count).to eq(3)
+      expect(merchants.first[:attributes][:name]).to eq("Billy Bob's Bug Boutique")
+      expect(merchants.second[:attributes][:name]).to eq("Bob's Burgers")
+      expect(merchants.third[:attributes][:name]).to eq("Jimbob's Jangles")
+    end
   end
 
   describe 'merchant items' do
