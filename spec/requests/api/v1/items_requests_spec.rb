@@ -126,7 +126,9 @@ RSpec.describe 'The Items API' do
 
     parsed = JSON.parse(response.body, symbolize_names: true)
     merchant = parsed[:data] #turning the JSON into a hash so we can test more easily
+    #removed the attribute :id from the merchant serializer  
     expect(response).to be_successful
-    expect(merchant[:attributes][:id]).to eq(merchant1.id)
+    expect(merchant[:id]).to be_a String
+    expect(merchant[:id]).to eq(merchant1.id.to_s)
   end
 end

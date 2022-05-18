@@ -1,8 +1,8 @@
 class MerchantSerializer
   include JSONAPI::Serializer
-  attributes :id, :name
+  attributes  :name
 
-  has_many :items
+  # has_many :items
 
   #example of how to handroll the serializer:
   # def self.format_merchants

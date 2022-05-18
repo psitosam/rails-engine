@@ -26,9 +26,11 @@ RSpec.describe 'The Merchants API' do
       get "/api/v1/merchants/#{id}"
 
       merchant = JSON.parse(response.body, symbolize_names: true)
-
-      expect(merchant).to have_key(:name)
-      expect(merchant[:name]).to be_a String
+# require 'pry'; binding.pry
+      expect(merchant[:data]).to have_key(:id)
+      expect(merchant[:data][:id]).to be_a String
+      expect(merchant[:data][:attributes]).to have_key(:name)
+      expect(merchant[:data][:attributes][:name]).to be_a String
     end
 
     describe 'sad path' do
@@ -80,11 +82,11 @@ RSpec.describe 'The Merchants API' do
 
       name = 'Bob'
 
-      get "/api/v1/merchants/find_all_merchants?name=#{name}"
+      get "/api/v1/merchants/find_all?name=#{name}"
 
       parsed = JSON.parse(response.body, symbolize_names: true)
       merchants = parsed[:data]
-
+# require 'pry'; binding.pry
       expect(response.status).to eq(200)
       expect(response).to be_successful
       expect(merchants.class).to eq(Array)
@@ -106,7 +108,7 @@ RSpec.describe 'The Merchants API' do
 
       parsed = JSON.parse(response.body, symbolize_names: true)
       items = parsed[:data]
-
+# require 'pry'; binding.pry
       expect(response.status).to eq(200)
       expect(response).to be_successful
       expect(merchant.items.count).to eq(3)
@@ -128,8 +130,8 @@ RSpec.describe 'The Merchants API' do
 
         parsed = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(404)
-        expect(parsed).to have_key(:errors)
-        expect(parsed[:errors][:message]).to eq("No items were found for merchant with id: #{merchant.id}")
+        expect(parsed).to have_key(:error)
+        expect(parsed[:error][:message]).to eq("No items were found for merchant with id: #{merchant.id}")
       end
     end
   end

@@ -1,8 +1,8 @@
 class ItemSerializer
   include JSONAPI::Serializer
   attributes :name, :description, :unit_price, :merchant_id
-  belongs_to :merchant
-  # NOTE ON HAND_ROLLING SERIALIZERS AND CUSTOM JSON 
+  # belongs_to :merchant
+  # NOTE ON HAND_ROLLING SERIALIZERS AND CUSTOM JSON
   # def self.format_items(items)
   #   {
   #     data: items.map do |item|
