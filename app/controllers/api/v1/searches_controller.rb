@@ -19,4 +19,20 @@ class Api::V1::SearchesController < ApplicationController
       render json: MerchantSerializer.new(merchants)
     end
   end
+
+  def find_all_items
+    if params[:name]
+      items = Item.where("name ILIKE ?", "%#{params[:name]}%") #this one works, but is vulnerable
+    elsif params[:min_price]
+      items = Item.where("unit_price > ?", params[:min_price])
+    elsif params[:max_price]
+      items = Item.where("unit_price < ?", params[:max_price])
+    end
+
+    if items.empty?
+      render json: { data: [] }
+    else
+      render json: ItemSerializer.new(items)
+    end
+  end
 end

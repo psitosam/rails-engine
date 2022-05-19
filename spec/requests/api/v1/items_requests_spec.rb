@@ -126,9 +126,31 @@ RSpec.describe 'The Items API' do
 
     parsed = JSON.parse(response.body, symbolize_names: true)
     merchant = parsed[:data] #turning the JSON into a hash so we can test more easily
-    #removed the attribute :id from the merchant serializer  
+    #removed the attribute :id from the merchant serializer
     expect(response).to be_successful
     expect(merchant[:id]).to be_a String
     expect(merchant[:id]).to eq(merchant1.id.to_s)
+  end
+
+  it 'can find all items matching name search terms' do
+    item_1 = create(:item, name: "Dog bowl")
+    item_3 = create(:item, name: "Dogmatic Litany")
+    item_2 = create(:item, name: "Ceramic dog")
+    item_4 = create(:item, name: "Chocolate Milky Way")
+
+    name = "Dog"
+    get "/api/v1/items/find_all?name=#{name}"
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+    items = parsed[:data]
+# require 'pry'; binding.pry
+    expect(response).to be_successful
+    expect(items.class).to eq(Array)
+    expect(items.count).to eq(3)
+    expect(items.first[:attributes][:name]).to eq(item_1.name)
+    expect(items.second[:attributes][:name]).to eq(item_3.name)
+    #this asserts that the search includes partial matches
+    expect(items.third[:attributes][:name]).to eq(item_2.name)
+    #this asserts that the search is case insensitive
   end
 end
