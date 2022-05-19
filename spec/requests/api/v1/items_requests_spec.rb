@@ -52,7 +52,7 @@ RSpec.describe 'The Items API' do
 
         parsed = JSON.parse(response.body, symbolize_names: true)
         item = parsed[:data]
-# require 'pry'; binding.pry
+
         expect(item[:message]).to eq("No item matches this id")
         expect(response.status).to eq(404)
       end
@@ -143,15 +143,16 @@ RSpec.describe 'The Items API' do
 
     parsed = JSON.parse(response.body, symbolize_names: true)
     items = parsed[:data]
-# require 'pry'; binding.pry
+
     expect(response).to be_successful
     expect(items.class).to eq(Array)
     expect(items.count).to eq(3)
     expect(items.first[:attributes][:name]).to eq(item_1.name)
+    #this asserts that the search finds exact matches first.
     expect(items.second[:attributes][:name]).to eq(item_3.name)
     #this asserts that the search includes partial matches
     expect(items.third[:attributes][:name]).to eq(item_2.name)
-    #this asserts that the search is case insensitive
+    #this asserts that the search is case insensitive.
   end
 
   context 'sad path' do
@@ -166,7 +167,7 @@ RSpec.describe 'The Items API' do
 
       parsed = JSON.parse(response.body, symbolize_names: true)
       items = parsed[:data]
-# require 'pry'; binding.pry
+
       expect(response).to be_successful
       expect(items.class).to eq(Array)
       expect(items.count).to eq(0)

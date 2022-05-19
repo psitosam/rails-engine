@@ -20,7 +20,8 @@ class Api::V1::SearchesController < ApplicationController
 
   def find_all_items
     if params[:name]
-      items = Item.where("name ILIKE ?", "%#{params[:name]}%") #this one works, but is vulnerable
+      items = Item.search_all(params[:name])
+      # items = Item.where("name ILIKE ?", "%#{params[:name]}%") #this one works, but is vulnerable, so I made a method in the Item model in order to not have user input directly conveyed to the database through possible SQL injection, similar to the search_all method in the Merchant model.
     elsif params[:min_price]
       items = Item.where("unit_price > ?", params[:min_price])
     elsif params[:max_price]
