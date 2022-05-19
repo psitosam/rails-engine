@@ -213,4 +213,22 @@ RSpec.describe 'The Items API' do
     expect(items.first[:attributes][:unit_price]).to eq(item_2.unit_price)
     expect(items.second[:attributes][:unit_price]).to eq(item_4.unit_price)
   end
+
+  it 'returns an empty array if no items are found' do
+    item_1 = create(:item, name: "Dog bowl", unit_price: 12.5)
+    item_3 = create(:item, name: "Dogmatic Litany", unit_price: 10.4)
+    item_2 = create(:item, name: "Ceramic dog", unit_price: 4.5)
+    item_4 = create(:item, name: "Chocolate Milky Way", unit_price: 5.5)
+
+    min_price = "50"
+
+    get "/api/v1/items/find?min_price=#{min_price}"
+
+    parsed = JSON.parse(response.body, symbolize_names: true)
+    items = parsed[:data]
+
+    expect(response).to be_successful
+    expect(items.class).to eq(Array)
+    expect(items.count).to eq(0)
+  end
 end
