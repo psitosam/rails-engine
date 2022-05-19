@@ -55,7 +55,7 @@ $ git clone https://github.com/psitosam/rails-engine-lite.git
 Once cloned, you'll have a new local copy in the directory you ran the clone command in.
 
 2. Change to the project directory:<br>
-In terminal, use `$cd` to navigate to the Little Esty Shop project directory.
+In terminal, use `$cd` to navigate to the Rails Engine Lite project directory.
 
 ```shell
 $ cd rails-engine-lite
