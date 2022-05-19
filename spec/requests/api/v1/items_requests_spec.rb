@@ -153,4 +153,23 @@ RSpec.describe 'The Items API' do
     expect(items.third[:attributes][:name]).to eq(item_2.name)
     #this asserts that the search is case insensitive
   end
+
+  context 'sad path' do
+    it 'returns an empty array if no matches found' do
+      item_1 = create(:item, name: "Dog bowl")
+      item_3 = create(:item, name: "Dogmatic Litany")
+      item_2 = create(:item, name: "Ceramic dog")
+      item_4 = create(:item, name: "Chocolate Milky Way")
+
+      name = "Alex"
+      get "/api/v1/items/find_all?name=#{name}"
+
+      parsed = JSON.parse(response.body, symbolize_names: true)
+      items = parsed[:data]
+
+      expect(response).to be_successful
+      expect(items.class).to eq(Array)
+      expect(items.count).to eq(0)
+    end
+  end
 end
